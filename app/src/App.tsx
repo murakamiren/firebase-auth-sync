@@ -1,10 +1,14 @@
+import axios from "axios";
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { FC, useEffect, useState } from "react";
+import { useAxios } from "./hooks/useAxios";
 import { auth, provider } from "./libs/firebase";
+import { someType } from "./types/types";
 
 const App: FC = () => {
 	const [isAuth, setIsAuth] = useState<boolean>(false);
 	const [token, setToken] = useState<string>("");
+	const [some, setSome] = useState<someType[] | null>(null);
 
 	const loginWithGoogle = async () => {
 		const signIn = await signInWithPopup(auth, provider);
@@ -22,6 +26,12 @@ const App: FC = () => {
 	const logout = async () => {
 		await signOut(auth);
 		console.log("logout");
+	};
+
+	const fetchData = async () => {
+		const res = await axios.get("http://localhost:5000/api/some");
+		const data = res.data;
+		setSome(data.some);
 	};
 
 	useEffect(() => {
@@ -43,6 +53,18 @@ const App: FC = () => {
 			<p>{isAuth ? "hello world" : "not auth"}</p>
 			<button onClick={loginWithGoogle}>sign in with google</button>
 			<button onClick={logout}>logout</button>
+			<button onClick={fetchData}>fetch data</button>
+			<div>
+				{some ? (
+					some.map((s) => (
+						<p key={s.id}>
+							{s.id}: {s.thing}
+						</p>
+					))
+				) : (
+					<p>ない</p>
+				)}
+			</div>
 		</div>
 	);
 };
