@@ -25,11 +25,16 @@ const App: FC = () => {
 
 	const logout = async () => {
 		await signOut(auth);
+		setToken("");
 		console.log("logout");
 	};
 
 	const fetchData = async () => {
-		const res = await axios.get("http://localhost:5000/api/some");
+		const res = await axios.get("http://localhost:5000/api/some", {
+			headers: {
+				Authorization: "Bearer " + token,
+			},
+		});
 		const data = res.data;
 		setSome(data.some);
 	};
@@ -43,6 +48,7 @@ const App: FC = () => {
 				console.log(`user found token: ${token}`);
 			} else {
 				setIsAuth(false);
+				setToken("");
 				console.log("user not found");
 			}
 		});

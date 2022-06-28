@@ -1,4 +1,6 @@
-const admin = require("firebase-admin");
+import firebaseAdmin from "firebase-admin";
+
+const admin = firebaseAdmin;
 
 const serviceAccount = require("./serviceAccount.json");
 
