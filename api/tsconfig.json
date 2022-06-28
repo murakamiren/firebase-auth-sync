@@ -1,5 +1,4 @@
 {
-	"exclude": ["node_modules"],
 	"compilerOptions": {
 		"module": "CommonJS",
 		"strict": true
