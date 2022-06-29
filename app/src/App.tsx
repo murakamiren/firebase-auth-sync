@@ -7,6 +7,7 @@ import { someType } from "./types/types";
 
 const App: FC = () => {
 	const [isAuth, setIsAuth] = useState<boolean>(false);
+	const [displayName, setDisplayName] = useState<string | null>(null);
 	const [token, setToken] = useState<string>("");
 	const [some, setSome] = useState<someType[] | null>(null);
 	const [errMsg, setErrMsg] = useState<string | null>(null);
@@ -17,9 +18,11 @@ const App: FC = () => {
 		console.log(result);
 		if (result) {
 			setIsAuth(true);
+			setDisplayName(result.displayName);
 			console.log("login");
 		} else {
 			setIsAuth(false);
+			setDisplayName(null);
 			console.log("cant login");
 		}
 	};
@@ -28,6 +31,7 @@ const App: FC = () => {
 		await signOut(auth);
 		setToken("");
 		setIsAuth(false);
+		setDisplayName(null);
 		console.log("logout");
 	};
 
@@ -59,11 +63,13 @@ const App: FC = () => {
 		onAuthStateChanged(auth, async (user) => {
 			if (user) {
 				setIsAuth(true);
+				setDisplayName(user.displayName);
 				const getToken = await user.getIdToken();
 				await setToken(getToken);
 				console.log(`user found token: ${token}`);
 			} else {
 				setIsAuth(false);
+				setDisplayName(null);
 				setToken("");
 				console.log("user not found");
 			}
@@ -72,7 +78,7 @@ const App: FC = () => {
 
 	return (
 		<div>
-			<p>{isAuth ? "hello world" : "not auth"}</p>
+			<p style={{ fontSize: 32, fontWeight: "bold" }}>{isAuth ? `hello! ${displayName}` : "not auth"}</p>
 			{isAuth ? (
 				<button onClick={logout}>logout</button>
 			) : (
