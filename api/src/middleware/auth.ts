@@ -11,10 +11,10 @@ class AuthMiddleware {
 					console.log("ok");
 					return next();
 				}
-				return res.json({ message: "un auth" });
+				return res.json({ message: "token is not verified!" });
 			} catch (e) {
 				console.log(e);
-				return res.json({ message: "error" });
+				return res.json({ message: "token is not verified!" });
 			}
 		}
 	}

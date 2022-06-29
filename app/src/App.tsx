@@ -9,6 +9,7 @@ const App: FC = () => {
 	const [isAuth, setIsAuth] = useState<boolean>(false);
 	const [token, setToken] = useState<string>("");
 	const [some, setSome] = useState<someType[] | null>(null);
+	const [errMsg, setErrMsg] = useState<string | null>(null);
 
 	const loginWithGoogle = async () => {
 		const signIn = await signInWithPopup(auth, provider);
@@ -31,13 +32,27 @@ const App: FC = () => {
 	};
 
 	const fetchData = async () => {
-		const res = await axios.get("http://localhost:5000/api/some", {
-			headers: {
-				Authorization: "Bearer " + token,
-			},
-		});
-		const data = res.data;
-		setSome(data.some);
+		try {
+			const res = await axios.get("http://localhost:5000/api/some", {
+				headers: {
+					Authorization: "Bearer " + token,
+				},
+			});
+			const data = res.data;
+			if (data.message === "token is not verified!") {
+				setErrMsg(data.message);
+				return;
+			}
+			setSome(data.some);
+			setErrMsg(null);
+		} catch (err: any) {
+			console.log(err);
+			setErrMsg(err.message);
+		}
+	};
+
+	const resetData = () => {
+		setSome(null);
 	};
 
 	useEffect(() => {
@@ -58,9 +73,13 @@ const App: FC = () => {
 	return (
 		<div>
 			<p>{isAuth ? "hello world" : "not auth"}</p>
-			<button onClick={loginWithGoogle}>sign in with google</button>
-			<button onClick={logout}>logout</button>
+			{isAuth ? (
+				<button onClick={logout}>logout</button>
+			) : (
+				<button onClick={loginWithGoogle}>sign in with google</button>
+			)}
 			<button onClick={fetchData}>fetch data</button>
+			<button onClick={resetData}>reset data</button>
 			<div>
 				{some ? (
 					some.map((s) => (
@@ -72,6 +91,7 @@ const App: FC = () => {
 					<p>ない</p>
 				)}
 			</div>
+			<p>{errMsg && errMsg}</p>
 		</div>
 	);
 };
