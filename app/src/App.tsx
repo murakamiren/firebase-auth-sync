@@ -26,6 +26,7 @@ const App: FC = () => {
 	const logout = async () => {
 		await signOut(auth);
 		setToken("");
+		setIsAuth(false);
 		console.log("logout");
 	};
 
