@@ -91,7 +91,7 @@ const App: FC = () => {
 					<p>ない</p>
 				)}
 			</div>
-			<p>{errMsg && errMsg}</p>
+			<p style={{ color: "red" }}>{errMsg && errMsg}</p>
 		</div>
 	);
 };
